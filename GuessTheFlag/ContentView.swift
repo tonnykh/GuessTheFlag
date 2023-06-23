@@ -17,6 +17,7 @@ struct ContentView: View {
     
     @State private var scoreTitle: String = ""
     @State private var showScore: Bool = false
+    @State private var showRestartAlert: Bool = false
     @State private var score: Int = 0
     
     var body: some View {
@@ -59,16 +60,37 @@ struct ContentView: View {
                 .padding()
                 .shadow(radius: 1)
 
-
-                
                 Spacer()
                 
                 Text("Score: \(score)")
                     .font(.title2.weight(.medium))
                 
                 Spacer()
+                VStack(alignment: .trailing) {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            tabRestartButton()
+                        }, label: {
+                            Image(systemName: "arrow.clockwise")
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.primary)
+                                .background(.ultraThinMaterial)
+                                .cornerRadius(10)
+                                .shadow(radius: 1)
+                                .buttonStyle(.borderedProminent)
+                        })
+                            .frame(width: 100, height: 100)
+                    }
+                }
+                .alert("Warning!", isPresented: $showRestartAlert) {
+                    Button("Restart", role: .destructive) {
+                        reset()
+                    }
+                } message: {
+                    Text("Do you want to restart the game?")
+                }   
             }
-            
         }
         .ignoresSafeArea()
         .alert(scoreTitle, isPresented: $showScore) {
@@ -78,6 +100,10 @@ struct ContentView: View {
         } message: {
             Text("Your score is \(score)")
         }
+    }
+    
+    func tabRestartButton() {
+        showRestartAlert = true
     }
     
     func checkAnswer(id: Int) {
@@ -96,6 +122,10 @@ struct ContentView: View {
     func nextFlags() {
         countries.shuffle()
         correctAnswers = Int.random(in: 0...2)
+    }
+    
+    func reset() {
+        score = 0
     }
 }
 
