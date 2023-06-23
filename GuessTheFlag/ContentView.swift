@@ -7,6 +7,20 @@
 
 import SwiftUI
 
+
+struct GlassCard: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(.ultraThinMaterial)
+            .cornerRadius(30)
+            .padding()
+            .shadow(radius: 1)
+    }
+}
+
+
 struct ContentView: View {
 
     @State private var countries: [String] = [
@@ -43,22 +57,19 @@ struct ContentView: View {
                         .font(.largeTitle.weight(.semibold))
                     
                     ForEach(0..<3) { index in
-                        Image(countries[index])
+                        FlagImage(image: countries[index])
                             .onTapGesture {
-                                checkAnswer(id: index)
-                                showScore = true
+                                onFlagTapped(id: index)
                             }
-                            .clipShape(RoundedRectangle(cornerRadius: 30))
-                            .padding(.vertical, 5)
-                            .shadow(color: .purple.opacity(0.8), radius: 40, x: 0, y: 10)
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(.ultraThinMaterial)
-                .cornerRadius(30)
-                .padding()
-                .shadow(radius: 1)
+                .modifier(GlassCard())
+//                .frame(maxWidth: .infinity)
+//                .padding()
+//                .background(.ultraThinMaterial)
+//                .cornerRadius(30)
+//                .padding()
+//                .shadow(radius: 1)
 
                 Spacer()
                 
@@ -85,7 +96,7 @@ struct ContentView: View {
                 }
                 .alert("Warning!", isPresented: $showRestartAlert) {
                     Button("Restart", role: .destructive) {
-                        reset()
+                        resetGame()
                     }
                 } message: {
                     Text("Do you want to restart the game?")
@@ -106,14 +117,17 @@ struct ContentView: View {
         showRestartAlert = true
     }
     
-    func checkAnswer(id: Int) {
+    func onFlagTapped(id: Int) {
         if id == correctAnswers {
             updateScore()
             scoreTitle = "🥳 Right! That's \(countries[id]) flag"
         } else {
             scoreTitle = "🙁 Wrong! That's the flag of \(countries[id])"
         }
+        
+        showScore = true
     }
+    
     
     func updateScore() {
         score += 1
@@ -124,13 +138,25 @@ struct ContentView: View {
         correctAnswers = Int.random(in: 0...2)
     }
     
-    func reset() {
+    func resetGame() {
         score = 0
+        nextFlags()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct FlagImage: View {
+    var image: String
+
+    var body: some View {
+        Image(image)
+            .clipShape(RoundedRectangle(cornerRadius: 30))
+            .padding(.vertical, 5)
+            .shadow(color: .purple.opacity(0.8), radius: 40, x: 0, y: 10)
     }
 }
