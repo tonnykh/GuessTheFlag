@@ -21,21 +21,54 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            Color.blue
-         
-            VStack(spacing: 20) {
-                Text("Tap the flag of")
-                Text(countries[correctAnswers])
+            
+            AngularGradient(
+                gradient: Gradient(colors: [.red, .blue, .yellow, .green, .purple, .orange, .mint]),
+                center: .center
+            )
+            
+            VStack {
+                Spacer()
+                Spacer()
+                Text("Guess the flag")
+                    .font(.largeTitle.bold())
+                    .foregroundColor(.white)
                 
-                ForEach(0..<3) { index in
-                    Image(countries[index])
-                        .onTapGesture {
-                            checkAnswer(id: index)
-                            showScore = true
-                        }
+                VStack {
+                    Text("Tap the flag of")
+                        .font(.headline.weight(.heavy))
+                        .foregroundColor(.secondary)
+                    Text(countries[correctAnswers])
+                        .font(.largeTitle.weight(.semibold))
+                    
+                    ForEach(0..<3) { index in
+                        Image(countries[index])
+                            .onTapGesture {
+                                checkAnswer(id: index)
+                                showScore = true
+                            }
+                            .clipShape(RoundedRectangle(cornerRadius: 30))
+                            .padding(.vertical, 5)
+                            .shadow(color: .purple.opacity(0.8), radius: 40, x: 0, y: 10)
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(.ultraThinMaterial)
+                .cornerRadius(30)
+                .padding()
+                .shadow(radius: 1)
+
+
+                
+                Spacer()
+                
                 Text("Score: \(score)")
+                    .font(.title2.weight(.medium))
+                
+                Spacer()
             }
+            
         }
         .ignoresSafeArea()
         .alert(scoreTitle, isPresented: $showScore) {
@@ -50,9 +83,9 @@ struct ContentView: View {
     func checkAnswer(id: Int) {
         if id == correctAnswers {
             updateScore()
-            scoreTitle = "Right! That's \(countries[id]) flag"
+            scoreTitle = "🥳 Right! That's \(countries[id]) flag"
         } else {
-            scoreTitle = "Wrong! That's the flag of \(countries[id])"
+            scoreTitle = "🙁 Wrong! That's the flag of \(countries[id])"
         }
     }
     
