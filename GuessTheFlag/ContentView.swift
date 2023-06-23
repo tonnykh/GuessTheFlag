@@ -9,14 +9,14 @@ import SwiftUI
 
 struct ContentView: View {
 
-    var countries: [String] = [
+    @State private var countries: [String] = [
         "Estonia", "France", "Germany", "Ireland", "Italy", "Monaco", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"
-    ]
+    ].shuffled()
     
-    var correctAnswers = Int.random(in: 0...2)
+    @State private var correctAnswers = Int.random(in: 0...2)
     
     @State private var scoreTitle: String = ""
-    @State private var showAlert: Bool = false
+    @State private var showScore: Bool = false
     
     var body: some View {
         ZStack {
@@ -26,18 +26,20 @@ struct ContentView: View {
                 Text("Tap the flag of")
                 Text(countries[correctAnswers])
                 
-                ForEach(0..<3, id: \.self) { index in
+                ForEach(0..<3) { index in
                     Image(countries[index])
                         .onTapGesture {
                             checkAnswer(id: index)
-                            showAlert = true
+                            showScore = true
                         }
                 }
             }
         }
         .ignoresSafeArea()
-        .alert(scoreTitle, isPresented: $showAlert) {
-            
+        .alert(scoreTitle, isPresented: $showScore) {
+            Button("Continue", action: {
+                nextFlags()
+            })
         } message: {
             Text("Your score is ???")
         }
@@ -49,6 +51,11 @@ struct ContentView: View {
         } else {
             scoreTitle = "Wrong"
         }
+    }
+    
+    func nextFlags() {
+        countries.shuffle()
+        correctAnswers = Int.random(in: 0...2)
     }
 }
 
