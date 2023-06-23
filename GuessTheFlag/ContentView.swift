@@ -15,7 +15,8 @@ struct ContentView: View {
     
     var correctAnswers = Int.random(in: 0...2)
     
-    @State var showAlert: Bool = false
+    @State private var scoreTitle: String = ""
+    @State private var showAlert: Bool = false
     
     var body: some View {
         ZStack {
@@ -25,19 +26,28 @@ struct ContentView: View {
                 Text("Tap the flag of")
                 Text(countries[correctAnswers])
                 
-                ForEach(0..<3, id: \.self) {
-                    Image(countries[$0])
-                }
-                .onTapGesture {
-                    showAlert = true
+                ForEach(0..<3, id: \.self) { index in
+                    Image(countries[index])
+                        .onTapGesture {
+                            checkAnswer(id: index)
+                            showAlert = true
+                        }
                 }
             }
         }
         .ignoresSafeArea()
-        .alert("Message", isPresented: $showAlert) {
+        .alert(scoreTitle, isPresented: $showAlert) {
             
         } message: {
-            Text("Sub title")
+            Text("Your score is ???")
+        }
+    }
+    
+    func checkAnswer(id: Int) {
+        if id == correctAnswers {
+            scoreTitle = "Right"
+        } else {
+            scoreTitle = "Wrong"
         }
     }
 }
