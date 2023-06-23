@@ -12,7 +12,10 @@ struct ContentView: View {
     var countries: [String] = [
         "Estonia", "France", "Germany", "Ireland", "Italy", "Monaco", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"
     ]
-
+    
+    var correctAnswers = Int.random(in: 0...2)
+    
+    @State var showAlert: Bool = false
     
     var body: some View {
         ZStack {
@@ -20,14 +23,22 @@ struct ContentView: View {
          
             VStack(spacing: 20) {
                 Text("Tap the flag of")
-                Text("UK")
+                Text(countries[correctAnswers])
                 
                 ForEach(0..<3, id: \.self) {
                     Image(countries[$0])
                 }
+                .onTapGesture {
+                    showAlert = true
+                }
             }
         }
         .ignoresSafeArea()
+        .alert("Message", isPresented: $showAlert) {
+            
+        } message: {
+            Text("Sub title")
+        }
     }
 }
 
