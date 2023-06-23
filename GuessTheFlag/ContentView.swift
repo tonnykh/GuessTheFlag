@@ -20,6 +20,12 @@ struct GlassCard: ViewModifier {
     }
 }
 
+extension View {
+    func glassCardStyle() -> some View {
+        modifier(GlassCard())
+    }
+}
+
 
 struct ContentView: View {
 
@@ -63,13 +69,7 @@ struct ContentView: View {
                             }
                     }
                 }
-                .modifier(GlassCard())
-//                .frame(maxWidth: .infinity)
-//                .padding()
-//                .background(.ultraThinMaterial)
-//                .cornerRadius(30)
-//                .padding()
-//                .shadow(radius: 1)
+                .glassCardStyle()
 
                 Spacer()
                 
