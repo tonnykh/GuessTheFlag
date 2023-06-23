@@ -17,6 +17,7 @@ struct ContentView: View {
     
     @State private var scoreTitle: String = ""
     @State private var showScore: Bool = false
+    @State private var score: Int = 0
     
     var body: some View {
         ZStack {
@@ -33,24 +34,30 @@ struct ContentView: View {
                             showScore = true
                         }
                 }
+                Text("Score: \(score)")
             }
         }
         .ignoresSafeArea()
         .alert(scoreTitle, isPresented: $showScore) {
-            Button("Continue", action: {
+            Button("Next", action: {
                 nextFlags()
             })
         } message: {
-            Text("Your score is ???")
+            Text("Your score is \(score)")
         }
     }
     
     func checkAnswer(id: Int) {
         if id == correctAnswers {
-            scoreTitle = "Right"
+            updateScore()
+            scoreTitle = "Right! That's \(countries[id]) flag"
         } else {
-            scoreTitle = "Wrong"
+            scoreTitle = "Wrong! That's the flag of \(countries[id])"
         }
+    }
+    
+    func updateScore() {
+        score += 1
     }
     
     func nextFlags() {
