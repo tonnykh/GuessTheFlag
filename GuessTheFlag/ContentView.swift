@@ -41,6 +41,7 @@ struct ContentView: View {
     @State private var score: Int = 0
     
     @State private var tappedFlag: Int?
+    @State private var blurFlags: Bool = false
     
     @State private var animationAmount = 0.0
     
@@ -70,6 +71,7 @@ struct ContentView: View {
                         FlagImage(image: countries[index])
                             .onTapGesture {
                                 onFlagTapped(id: index)
+                                blurFlags = true
                                 tappedFlag = index
                                 withAnimation(.spring(response: 2, dampingFraction: 1)) {
                                     animationAmount += 360
@@ -80,6 +82,13 @@ struct ContentView: View {
                                     (tappedFlag == index ? animationAmount : 0)
                                 ),
                                 axis: (x: 0, y: 1, z: 0)
+                            )
+                            .opacity(
+                                blurFlags == true ?
+                                tappedFlag != index ?
+                                0.25
+                                : 1
+                                : 1
                             )
                     }
                 }
@@ -121,6 +130,7 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showScore) {
             Button("Next", action: {
                 nextFlags()
+                blurFlags.toggle()
             })
         } message: {
             Text("Your score is \(score)")
