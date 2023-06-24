@@ -45,6 +45,8 @@ struct ContentView: View {
     
     @State private var animationAmount = 0.0
     
+    @State private var scaleFlag: Double = 1.0
+    
     var body: some View {
         ZStack {
             
@@ -73,10 +75,18 @@ struct ContentView: View {
                                 onFlagTapped(id: index)
                                 blurFlags = true
                                 tappedFlag = index
+                                scaleFlag = 0.8
                                 withAnimation(.spring(response: 2, dampingFraction: 1)) {
                                     animationAmount += 360
                                 }
                             }
+                            .scaleEffect(
+                                blurFlags == true ?
+                                tappedFlag != index ?
+                                scaleFlag
+                                : 1
+                                : 1)
+                            .animation(.easeInOut(duration: 2), value: scaleFlag)
                             .rotation3DEffect(
                                 .degrees(
                                     (tappedFlag == index ? animationAmount : 0)
@@ -131,6 +141,7 @@ struct ContentView: View {
             Button("Next", action: {
                 nextFlags()
                 blurFlags.toggle()
+                scaleFlag = 1.0
             })
         } message: {
             Text("Your score is \(score)")
